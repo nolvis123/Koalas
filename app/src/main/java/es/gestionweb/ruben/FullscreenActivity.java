@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Browser;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.WebChromeClient;
@@ -14,6 +16,7 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -138,7 +141,7 @@ public class FullscreenActivity extends AppCompatActivity {
         });
 
         // Cargamos la web
-        browser.loadUrl("http://li-distribuciones.es/cprint/");
+        browser.loadUrl("https://li-distribuciones.es/cprint/");
 
         //Sincronizamos la barra de progreso de la web
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
@@ -210,5 +213,24 @@ public class FullscreenActivity extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+    //Url para limpiar la session
+//http://li-distribuciones.es/cprint/borrarcokies.php
+
+    //Impedir que el botón Atrás cierre la aplicación
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+                    if (browser.canGoBack()) {
+                        browser.goBack();
+                    } else {
+                        finish();
+                    }
+                    Toast.makeText(FullscreenActivity.this, "Se cerrará la aplicación", Toast.LENGTH_LONG).show();
+                    return true;
+            }
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }
